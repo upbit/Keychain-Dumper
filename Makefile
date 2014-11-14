@@ -1,42 +1,14 @@
-ROOT := $(realpath $(shell dirname $(lastword $(MAKEFILE_LIST))))
+ARCHS := armv7 armv7s arm64
 
-# Create some symlinks in the CWD to your toolchain and sdk sysroot
-# or just point these directly to their respective paths.
-#
-# TOOLCHAIN would be /Developer/Platforms/iPhoneOS.platform/Developer 
-# if you were using the iPhone sdk.
-# ex. ./toolchain -> /Developer/Platforms/iPhoneOS.platform/Developer
-#
-# SYSROOT would be the location of your iPhoneOS*.sdk directory. Using
-# the sdk, that would be under SDKs in the toolchain location.
-# ex. ./sdk -> /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/
-TOOLCHAIN_DIR=$(ROOT)/toolchain
-SYSROOT = $(ROOT)/sdk
+include theos/makefiles/common.mk
 
-BIN=$(TOOLCHAIN_DIR)/usr/bin
-GCC_BIN = $(BIN)/gcc
+TOOL_NAME = keychain_dumper
+keychain_dumper_FRAMEWORKS = Security
+keychain_dumper_LIBRARIES = sqlite3
+keychain_dumper_FILES = main.m
 
+include $(THEOS_MAKE_PATH)/tool.mk
 
-ARCH_FLAGS=-arch armv6
-LDFLAGS	=\
-	-F./sdk/System/Library/Frameworks/\
-	-F./sdk/System/Library/PrivateFrameworks/\
-	-framework UIKit\
-	-framework CoreFoundation\
-	-framework Foundation\
-	-framework CoreGraphics\
-	-framework Security\
-	-lobjc\
-	-lsqlite3\
-	-bind_at_load
-
-GCC_ARM = $(GCC_BIN) -Os -Wimplicit -isysroot $(SYSROOT) $(ARCH_FLAGS)
-
-default: main.o 
-	$(GCC_ARM) $(LDFLAGS) main.o -o keychain_dumper
-
-main.o: main.m
-	$(GCC_ARM) -c main.m
-
-clean:
-	rm -f keychain_dumper *.o 
+ldid::
+	export CODESIGN_ALLOCATE=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/codesign_allocate
+	ldid -Sentitlements.xml obj/keychain_dumper

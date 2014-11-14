@@ -27,52 +27,17 @@ By default keychain_dumper only dumps "Generic" and "Internet" passwords.  This 
 	-k: Dump Keys
 
 By default passing no option flags is equivalent to running keychain_dumper with the `-gn` flags set.  The other flags largely allow you to dump additional information related to certificates that are installed on the device.  
-    
+
 ## Building
 
+Build with Theos:
 
-### Create a Self-Signed Certificate
-
-Open up the Keychain Access app located in /Applications/Utilties/Keychain Access
-
-From the application menu open Keychain Access -> Certificate Assistant -> Create a Certificate
-
-Enter a name for the certificate, and make note of this name, as you will need it later when you sign Keychain Dumper.  Make sure the Identity Type is “Self Signed Root” and the Certificate Type is “Code Signing”.  You don’t need to check the “Let me override defaults” unless you want to change other properties on the certificate (name, email, etc).
-
-### Build It
-
-In order to build Keychain Dumper you must first create two symbolic links to the appropriate iOS SDK directories. At the time the tool was developed the iOS 5.0 SDK was current and you may need to update the target directories based on the current SDK that is installed.  
-
-	ln -s /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/ sdk
-	ln -s /Developer/Platforms/iPhoneOS.platform/Developer toolchain
-
-Once you have created the symbolic links your directory structure should look similar to:
-
-	-rwxr-xr-x  1 anonymous  staff  1184 Jan 20 08:44 Makefile
-	-rw-r--r--  1 anonymous  staff  2504 Jan 24 13:31 README.md
-	-rw-r--r--  1 anonymous  staff   269 Jan 24 11:27 entitlements.xml
-	-rw-r--r--  1 anonymous  staff  8525 Jan 18 14:49 main.m
-	lrwxr-xr-x  1 anonymous  staff    70 Jan 18 14:50 sdk -> /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/
-	lrwxr-xr-x  1 anonymous  staff    48 Jan 18 14:50 toolchain -> /Developer/Platforms/iPhoneOS.platform/Developer
-
-You should now be able to compile the project using the included makefile.
-
-	make
-
-If all goes well you should have a binary `keychain_dumper` placed in the same directory as all of the other project files.  
-
-
-### Sign It
-
-Using the entitlements.xml file found in the Keychain-Dumper Git repository, sign the binary.  The below certificate was named "Test Cert 1", but you should subsitute the name you used during the certificate creation step above.  
-
-	codesign -fs "Test Cert 1" --entitlements entitlements.xml keychain_dumper
-
-You should now be able to follow the directions specified in the Usage section above.  If you don't want to use the wildcard entitlment file that is provided, you can also sign specific entitlements into the binary.  Using the unsigned Keychain Dumper you can get a list of entitelments that exist on your specific iOS device by using the `-e` flag.  For example, you can run Keychain Dumper as follows:
-
-	./keychain_dumper -e > /var/tmp/entitlements.xml
-
-The resulting file can be used in place of the included entitlements.xml file.  
+```bash
+cd Keychain-Dumper
+ln -s /opt/theos .
+make
+make ldid
+```
 
 ## Contact & Help
 

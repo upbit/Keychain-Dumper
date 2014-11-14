@@ -305,17 +305,16 @@ void printResultsForSecClass(NSArray *keychainItems, CFTypeRef kSecClassType) {
 
 int main(int argc, char **argv) 
 {
-	id pool=[NSAutoreleasePool new];
+	id pool = [NSAutoreleasePool new];
 	NSArray* arguments;
 	arguments = getCommandLineOptions(argc, argv);
-	NSArray *passwordItems;	
 	if ([arguments indexOfObject:@"dumpEntitlements"] != NSNotFound) {
 		dumpKeychainEntitlements();
 		exit(EXIT_SUCCESS);
 	}
 	
 	NSArray *keychainItems = nil;
-	for (id *kSecClassType in (NSArray *) arguments) {
+	for (id kSecClassType in (NSArray *) arguments) {
 		keychainItems = getKeychainObjectsForSecClass((CFTypeRef)kSecClassType);
 		printResultsForSecClass(keychainItems, (CFTypeRef)kSecClassType);
 		[keychainItems release];	

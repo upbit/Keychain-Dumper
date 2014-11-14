@@ -1,4 +1,7 @@
-toolchain
-sdk
-main.o
 .DS_Store
+
+.theos
+theos/
+obj/
+*.deb
+_/

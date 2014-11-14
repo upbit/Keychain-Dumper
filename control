@@ -1,0 +1,10 @@
+Package: com.ptoomey3.keychain_dumper
+Name: Keychain-Dumper
+Depends: 
+Version: 1.0
+Architecture: iphoneos-arm
+Description: A tool to check which keychain items are available to an attacker once an iOS device has been jailbroken.
+Maintainer: upbit
+Author: ptoomey3
+Section: System
+Tag: role::hacker
